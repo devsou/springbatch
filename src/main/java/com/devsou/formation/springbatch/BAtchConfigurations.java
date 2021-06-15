@@ -28,6 +28,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableBatchProcessing
@@ -42,6 +44,15 @@ public class BAtchConfigurations {
 
     @Value("classpath:input/users_input_*.csv")
     private Resource[] inputResources;
+
+    @Value("http://192.23.454")
+    private String url;
+
+    private static List<String> list = new ArrayList<>();
+    static {
+        list.add("1");
+    }
+
 
     @Bean
     public Job readCSVFilesJob() {
@@ -64,7 +75,7 @@ public class BAtchConfigurations {
 
     @Bean
     public ItemProcessor processor(){
-        return new MyItemProcessor();
+        return new MyItemProcessor(url, list);
     }
 
 
@@ -108,6 +119,11 @@ public class BAtchConfigurations {
         BeanWrapperFieldSetMapper mapper = new BeanWrapperFieldSetMapper();
         mapper.setTargetType(User.class);
         return mapper;
+    }
+
+    @Bean
+    public ItemWriter<User> writerConsole() {
+        return new ConsoleItemWriter(list);
     }
 
     @Bean
