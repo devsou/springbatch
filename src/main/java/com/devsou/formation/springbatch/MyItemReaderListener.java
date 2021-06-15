@@ -6,16 +6,16 @@ public class MyItemReaderListener implements ItemReadListener<User> {
 
     @Override
     public void beforeRead()  {
-        System.out.println("beforeRead");
+        System.out.println("["+Thread.currentThread().getName()+"] : beforeRead");
     }
 
     @Override
     public void afterRead(User u)  {
-        System.out.println("afterRead " + u.toString());
+        System.out.println("["+Thread.currentThread().getName()+"] : afterRead");
     }
 
     @Override
     public void onReadError(Exception e)  {
-        System.out.println("onReadError " + e.getMessage());
+        System.out.println("["+Thread.currentThread().getName()+"] : onReadError");
     }
 }

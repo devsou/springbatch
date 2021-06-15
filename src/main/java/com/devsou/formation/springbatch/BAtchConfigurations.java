@@ -21,8 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.sql.DataSource;
 
@@ -49,10 +52,13 @@ public class BAtchConfigurations {
     public Step step1() {
         return stepBuilderFactory.get("step1").<User, User>chunk(5)
                 .reader(multiResourceItemReader())
-                .listener(new MyItemReaderListener())
                 //.writer(write())
                 .writer(writerJDBC())
                 .processor(processor())
+                .listener(new MyItemReaderListener())
+                .listener(new MyItemWriterListener())
+                .listener(new MyItemListenrProcessor())
+                .taskExecutor(taskExecutor())
                 .build();
     }
 
@@ -112,7 +118,7 @@ public class BAtchConfigurations {
                 .dataSource(dataSource())
                 .build();
     }
-
+/**/
     @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
@@ -128,5 +134,13 @@ public class BAtchConfigurations {
         return new JdbcTemplate(dataSource);
     }
 
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(25);
+        return executor;
+    }
 
 }
