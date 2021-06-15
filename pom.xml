@@ -8,14 +8,12 @@
 		<version>2.5.1</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.bnpparibas.bddfit.formation</groupId>
+	<groupId>com.devsou.formation</groupId>
 	<artifactId>springbatch</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>springbatch</name>
 	<description>Demo project for Spring Boot</description>
-	<properties>
-		<java.version>11</java.version>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
